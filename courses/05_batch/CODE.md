@@ -1,6 +1,6 @@
 # 05 并发调用｜CODE
 
-对应 batch.py；原始 batch.js。
+对应当前课程的 `batch.py`。原项目的 `batch.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
 ## 1. 异步函数
 ~~~python

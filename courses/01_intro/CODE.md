@@ -1,6 +1,6 @@
 # 01 基础调用｜CODE
 
-对应 Python：intro.py；原始参考：intro.js。
+对应当前课程的 `intro.py`。原项目的 `intro.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
 ## 原代码到 Python 的映射
 | node-llama-cpp | Python + API |

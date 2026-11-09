@@ -1,6 +1,6 @@
 # 03 专业翻译｜CODE
 
-对应 translation.py；原版 translation.js 使用 GGUF 运行 Apertus 模型。Python 版本完整保留原示例英译德的专业指令和英文摘要，以便进行源码对照。
+对应当前课程的 `translation.py`。原项目的 `translation.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
 ## 1. 模型切换
 ~~~python
@@ -29,7 +29,7 @@ messages = [
     {"role": "user", "content": f"Translate this text into German:\n\n{SOURCE_TEXT}"},
 ]
 ~~~
-SOURCE_TEXT 与原 JS 的 HexMachina 英文摘要对应，包含长时规划、Settlers of Catan、环境探索与策略优化、54 % 胜率等内容。原文保留跨行断词，便于与 JS 对照；如果用于真实翻译系统，建议先清理 PDF 提取导致的断词。
+SOURCE_TEXT 与原 JS 的 HexMachina 英文摘要对应，包含长时规划、Settlers of Catan、环境探索与策略优化、54 % 胜率等内容。示例保留了原文中的跨行断词；实际翻译系统建议先清理 PDF 提取产生的断词。
 
 ## 4. 输出
 直接打印 response.choices[0].message.content。返回纯文本并非强制保证，专业翻译任务应额外核对数字和术语。

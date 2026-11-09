@@ -1,6 +1,6 @@
 # 02 API 基础示例｜CODE
 
-对应 openai_intro.py；原始 openai-intro.js。
+对应当前课程的 `openai_intro.py`。原项目的 `openai-intro.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
 ## 初始化
 公共工具 get_model_config() 返回模型参数，get_client() 创建同步 OpenAI SDK 客户端。所有服务使用兼容的 Chat Completions 接口。

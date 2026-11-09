@@ -1,6 +1,6 @@
 # 06 流式输出｜CODE
 
-对应 coding.py；原版 coding.js。
+对应当前课程的 `coding.py`。原项目的 `coding.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
 ## 1. 输入
 默认保留英文问题：
