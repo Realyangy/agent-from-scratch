@@ -1,112 +1,46 @@
-# Code Explanation: intro.js
+# 01 基础调用｜CODE
 
-This file demonstrates the most basic interaction with a local LLM (Large Language Model) using node-llama-cpp.
+对应 Python：intro.py；原始参考：intro.js。
 
-## Step-by-Step Code Breakdown
+## 原代码到 Python 的映射
+| node-llama-cpp | Python + API |
+| --- | --- |
+| getLlama / loadModel | 模型已由独立 vLLM 或 API 服务托管 |
+| createContext | 上下文由模型服务管理 |
+| LlamaChatSession.prompt | client.chat.completions.create |
+| dispose | 关闭 HTTP Client |
 
-### 1. Import Required Modules
-```javascript
-import {
-    getLlama,
-    LlamaChatSession,
-} from "node-llama-cpp";
-import {fileURLToPath} from "url";
-import path from "path";
-```
-- **getLlama**: Main function to initialize the llama.cpp runtime
-- **LlamaChatSession**: Class for managing chat conversations with the model
-- **fileURLToPath** and **path**: Standard Node.js modules for handling file paths
+## 公共模型客户端
+项目将配置放在 utils/llm_client.py 中，只保留 Qwen（vLLM）和 DeepSeek（API）。
 
-### 2. Set Up Directory Path
-```javascript
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-```
-- Since ES modules don't have `__dirname` by default, we create it manually
-- This gives us the directory path of the current file
-- Needed to locate the model file relative to this script
-
-### 3. Initialize Llama Runtime
-```javascript
-const llama = await getLlama();
-```
-- Creates the main llama.cpp instance
-- This initializes the underlying C++ runtime for model inference
-- Must be done before loading any models
-
-### 4. Load the Model
-```javascript
-const model = await llama.loadModel({
-    modelPath: path.join(
-        __dirname,
-        "../",
-        "models",
-        "Qwen3-1.7B-Q8_0.gguf"
+~~~python
+config = get_model_config(args.model)
+with get_client(config.name) as client:
+    response = client.chat.completions.create(
+        model=config.model,
+        messages=[{"role": "user", "content": args.prompt}],
     )
-});
-```
-- Loads a quantized model file (GGUF format)
-- **Qwen3-1.7B-Q8_0.gguf**: A 1.7 billion parameter model, quantized to 8-bit
-- The model is stored in the `models` folder at the repository root
-- Loading the model into memory takes a few seconds
+print(response.choices[0].message.content)
+~~~
 
-### 5. Create a Context
-```javascript
-const context = await model.createContext();
-```
-- A **context** represents the model's working memory
-- It holds the conversation history and current state
-- Has a fixed size limit (default: model's maximum context size)
-- All prompts and responses are stored in this context
+config.name 是方便人类选择的别名；config.model 必须是对应服务认识的真实模型 ID。Qwen 的模型 ID 从 AGENT_VLLM_MODEL 读取。
 
-### 6. Create a Chat Session
-```javascript
-const session = new LlamaChatSession({
-    contextSequence: context.getSequence(),
-});
-```
-- **LlamaChatSession**: High-level API for chat-style interactions
-- Uses a sequence from the context to maintain conversation state
-- Automatically handles prompt formatting and response parsing
+## 命令行参数
+--model 切换后端；--prompt 更换输入问题。省略 --model 时读取 AGENT_MODEL_NAME。
 
-### 7. Define the Prompt
-```javascript
-const prompt = `do you know node-llama-cpp`;
-```
-- Simple question to test if the model knows about the library we're using
-- This will be sent to the model for processing
+## 运行方法
+~~~bash
+cp .env.example .env
+# 修改 .env 中的服务地址、模型 ID、密钥
+python courses/01_intro/intro.py
+python courses/01_intro/intro.py --model DeepSeekV4.1-Flash
+~~~
 
-### 8. Send Prompt and Get Response
-```javascript
-const a1 = await session.prompt(prompt);
-console.log("AI: " + a1);
-```
-- **session.prompt()**: Sends the prompt to the model and waits for completion
-- The model generates a response based on its training
-- We log the response to the console with "AI:" prefix
+## 常见错误
+- Connection refused：服务地址不通或 vLLM 未启动。
+- 401：API Key 无效或未配置。
+- 404 model not found：模型 ID 与服务不符。
+- 找不到 utils：确认从仓库目录运行。
 
-### 9. Clean Up Resources
-```javascript
-session.dispose()
-context.dispose()
-model.dispose()
-llama.dispose()
-```
-- **Important**: Always dispose of resources when done
-- Frees up memory and GPU resources
-- Prevents memory leaks in long-running applications
-- Must be done in this order (session → context → model → llama)
-
-## Key Concepts Demonstrated
-
-1. **Basic LLM initialization**: Loading a model and creating inference context
-2. **Simple prompting**: Sending a question and receiving a response
-3. **Resource management**: Proper cleanup of allocated resources
-
-## Expected Output
-
-When you run this script, you should see output like:
-```
-AI: Yes, I'm familiar with node-llama-cpp. It's a Node.js binding for llama.cpp...
-```
-
-The exact response will vary based on the model's training data and generation parameters.
+## 学习练习
+修改 Prompt，分别使用本地 Qwen 和 DeepSeek，观察同一问题的不同回答；注意输出差异不等于准确性差异。

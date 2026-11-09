@@ -1,175 +1,38 @@
-# Concept: Basic LLM Interaction
+# 01 基础 LLM 交互｜CONCEPT
 
-## Overview
+## 学习目标
+理解 LLM 的输入、推理服务、上下文窗口、逐 Token 生成与输出。原仓库使用 node-llama-cpp 在 JavaScript 进程内加载 GGUF 模型；本 Python 版使用独立 vLLM 服务或者 DeepSeek API，不在 Agent 环境加载模型。
 
-This example introduces the fundamental concepts of working with a Large Language Model (LLM) running locally on your machine. It demonstrates the simplest possible interaction: loading a model and asking it a question.
+## 什么是本地 LLM？
+Local LLM 指模型运行在自有机器上。其优势是可控制部署、避免按次向外部模型服务付费，并能自行管理数据；代价是需要计算资源。使用 vLLM 时，Python 客户端和模型服务可位于不同进程或机器，仍通过 HTTP 通信。
 
-## What is a Local LLM?
+## 核心组件
+1. **Model**：权重和架构。由 vLLM 或第三方服务加载。
+2. **Tokenizer**：将输入编码成 Token。Token 既不等于字符，也不固定等于英文单词。
+3. **Context Window**：一次请求能容纳的输入、历史与生成预算，受模型和部署配置限制。
+4. **Chat Template**：将 system、user、assistant 等角色格式化为模型可处理的输入。
+5. **Sampling**：根据生成概率选择下一 Token，可调整温度与输出上限。
 
-A **Local LLM** is an AI language model that runs entirely on your own computer, without requiring internet connectivity or external API calls. Key benefits:
+## 推理流程
+~~~text
+Python messages
+    ↓ HTTP 请求（OpenAI 兼容格式）
+vLLM / DeepSeek API
+    ↓ 模板、Tokenization、推理
+Chat Completion 返回内容
+    ↓
+response.choices[0].message.content
+~~~
 
-- **Privacy**: Your data never leaves your machine
-- **Cost**: No per-token API charges
-- **Control**: Full control over model selection and parameters
-- **Offline**: Works without internet connection
+模型通常逐 Token 生成回答。一次 Chat Completion 本身不自动保存跨调用历史；多轮会话需要应用管理并重新提供历史消息。
 
-## Core Components
+## 资源管理
+原项目在 JS 中释放 session、context、model。现在模型由推理服务负责管理，Python 的 with 语句用于关闭 HTTP 客户端，不会卸载 vLLM 模型。
 
-### 1. Model Files (GGUF Format)
+## 为什么与 Agent 有关？
+LLM 是 Agent 决策的一部分，但只问一次模型还不是完整 Agent。后续课程会引入 Tool Calling、Memory、ReAct 及任务规划。
 
-```
-┌─────────────────────────────┐
-│   Qwen3-1.7B-Q8_0.gguf     │
-│   (Model Weights File)      │
-│                             │
-│  • Stores learned patterns  │
-│  • Quantized for efficiency │
-│  • Loaded into RAM/VRAM     │
-└─────────────────────────────┘
-```
-
-- **GGUF**: File format optimized for llama.cpp
-- **Quantization**: Reduces model size (e.g., 8-bit instead of 16-bit)
-- **Trade-off**: Smaller size and faster speed vs. slight quality loss
-
-### 2. The Inference Pipeline
-
-```
-User Input → Model → Generation → Response
-    ↓          ↓          ↓           ↓
- "Hello"   Context   Sampling    "Hi there!"
-```
-
-**Flow Diagram:**
-```
-┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
-│  Prompt  │ --> │ Context  │ --> │  Model   │ --> │ Response │
-│          │     │ (Memory) │     │(Weights) │     │  (Text)  │
-└──────────┘     └──────────┘     └──────────┘     └──────────┘
-```
-
-### 3. Context Window
-
-The **context** is the model's working memory:
-
-```
-┌─────────────────────────────────────────┐
-│           Context Window                │
-│  ┌─────────────────────────────────┐   │
-│  │ System Prompt (if any)          │   │
-│  ├─────────────────────────────────┤   │
-│  │ User: "do you know node-llama?" │   │
-│  ├─────────────────────────────────┤   │
-│  │ AI: "Yes, I'm familiar..."      │   │
-│  ├─────────────────────────────────┤   │
-│  │ (Space for more conversation)   │   │
-│  └─────────────────────────────────┘   │
-└─────────────────────────────────────────┘
-```
-
-- Limited size (e.g., 2048, 4096, or 8192 tokens)
-- When full, old messages must be removed
-- All previous messages influence the next response
-
-## How LLMs Generate Responses
-
-### Token-by-Token Generation
-
-LLMs don't generate entire sentences at once. They predict one **token** (word piece) at a time:
-
-```
-Prompt: "What is AI?"
-
-Generation Process:
-"What is AI?" → [Model] → "AI"
-"What is AI? AI" → [Model] → "is"
-"What is AI? AI is" → [Model] → "a"
-"What is AI? AI is a" → [Model] → "field"
-... continues until stop condition
-```
-
-**Visualization:**
-```
-Input Prompt
-     ↓
-┌────────────┐
-│   Model    │ → Token 1: "AI"
-│ Processes  │ → Token 2: "is"
-│   & Predicts│ → Token 3: "a"
-└────────────┘ → Token 4: "field"
-                → ...
-```
-
-## Key Concepts for AI Agents
-
-### 1. Stateless Processing
-- Each prompt is independent unless you maintain context
-- The model has no memory between different script runs
-- To build an "agent", you need to:
-  - Keep the context alive between prompts
-  - Maintain conversation history
-  - Add tools/functions (covered in later examples)
-
-### 2. Prompt Engineering Basics
-The way you phrase questions affects the response:
-
-```
-❌ Poor: "node-llama-cpp"
-✅ Better: "do you know node-llama-cpp"
-✅ Best: "Explain what node-llama-cpp is and how it works"
-```
-
-### 3. Resource Management
-LLMs consume significant resources:
-
-```
-Model Loading
-     ↓
-┌─────────────────┐
-│  RAM/VRAM Usage │  ← Models need gigabytes
-│  CPU/GPU Time   │  ← Inference takes time
-│  Memory Leaks?  │  ← Must cleanup properly
-└─────────────────┘
-     ↓
-Proper Disposal
-```
-
-## Why This Matters for Agents
-
-This basic example establishes the foundation for AI agents:
-
-1. **Agents need LLMs to "think"**: The model processes information and generates responses
-2. **Agents need context**: To maintain state across interactions
-3. **Agents need structure**: Later examples add tools, memory, and reasoning loops
-
-## Next Steps
-
-After understanding basic prompting, explore:
-- **System prompts**: Giving the model a specific role or behavior
-- **Function calling**: Allowing the model to use tools
-- **Memory**: Persisting information across sessions
-- **Reasoning patterns**: Like ReAct (Reasoning + Acting)
-
-## Diagram: Complete Architecture
-
-```
-┌──────────────────────────────────────────────────┐
-│            Your Application                      │
-│  ┌────────────────────────────────────────────┐ │
-│  │         node-llama-cpp Library             │ │
-│  │  ┌──────────────────────────────────────┐  │ │
-│  │  │      llama.cpp (C++ Runtime)         │  │ │
-│  │  │  ┌────────────────────────────────┐  │  │ │
-│  │  │  │   Model File (GGUF)            │  │  │ │
-│  │  │  │   • Qwen3-1.7B-Q8_0.gguf       │  │  │ │
-│  │  │  └────────────────────────────────┘  │  │ │
-│  │  └──────────────────────────────────────┘  │ │
-│  └────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────┘
-           ↕
-    ┌──────────────┐
-    │  CPU / GPU   │
-    └──────────────┘
-```
-
-This layered architecture allows you to build sophisticated AI agents on top of basic LLM interactions.
+## 自查
+- 模型 ID 与项目模型别名有什么区别？
+- vLLM 与 Python Agent 为什么可以用不同 Conda 环境？
+- 模型会不会自动记住上一次独立 API 请求？
