@@ -1,0 +1,13 @@
+# 忽略日志和输出结果，不上传github
+logger/*
+output/*
+
+# 忽略python缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# 忽略环境变量
+.env
+.env.*
+!.env.example
