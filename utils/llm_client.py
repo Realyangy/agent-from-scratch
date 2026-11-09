@@ -26,16 +26,16 @@ def get_model_config(model_name: str | None = None) -> ModelConfig:
     if name == "Qwen3.5-27b-AWQ-4bit":
         config = ModelConfig(
             name=name,
-            model=os.getenv("VLLM_MODEL").strip(),
-            base_url=os.getenv("VLLM_BASE_URL").strip(),
-            api_key=os.getenv("VLLM_API_KEY").strip(),
+            model=os.getenv("VLLM_MODEL", "").strip(),
+            base_url=os.getenv("VLLM_BASE_URL", "").strip(),
+            api_key=os.getenv("VLLM_API_KEY", "").strip(),
         )
     elif name == "DeepSeekV4.1-Flash":
         config = ModelConfig(
             name=name,
-            model=os.getenv("DEEPSEEK_MODEL").strip(),
-            base_url=os.getenv("DEEPSEEK_BASE_URL").strip(),
-            api_key=os.getenv("DEEPSEEK_API_KEY").strip(),
+            model=os.getenv("DEEPSEEK_MODEL", "").strip(),
+            base_url=os.getenv("DEEPSEEK_BASE_URL", "").strip(),
+            api_key=os.getenv("DEEPSEEK_API_KEY", "").strip(),
         )
     else:
         raise ValueError(f"Unknown model: {name}, please select from [{', '.join(MODEL_NAMES)}]")

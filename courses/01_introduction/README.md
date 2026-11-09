@@ -1,7 +1,7 @@
-# 01 基础 LLM 交互｜CONCEPT
+# 01 基础 LLM 交互
 
 ## 学习目标
-理解 LLM 的输入、推理服务、上下文窗口、逐 Token 生成与输出。原仓库使用 node-llama-cpp 在 JavaScript 进程内加载 GGUF 模型；本 Python 版使用独立 vLLM 服务或者 DeepSeek API，不在 Agent 环境加载模型。
+理解 LLM 的输入、推理服务、上下文窗口、逐 Token 生成与输出。本 Python 版使用独立 vLLM 服务或者 DeepSeek API，不在 Agent 环境加载模型。
 
 ## 什么是本地 LLM？
 Local LLM 指模型运行在自有机器上。其优势是可控制部署、避免按次向外部模型服务付费，并能自行管理数据；代价是需要计算资源。使用 vLLM 时，Python 客户端和模型服务可位于不同进程或机器，仍通过 HTTP 通信。
@@ -27,12 +27,7 @@ response.choices[0].message.content
 模型通常逐 Token 生成回答。一次 Chat Completion 本身不自动保存跨调用历史；多轮会话需要应用管理并重新提供历史消息。
 
 ## 资源管理
-原项目在 JS 中释放 session、context、model。现在模型由推理服务负责管理，Python 的 with 语句用于关闭 HTTP 客户端，不会卸载 vLLM 模型。
+模型由推理服务负责管理，Python 的 with 语句用于关闭 HTTP 客户端，不会卸载 vLLM 模型。
 
 ## 为什么与 Agent 有关？
 LLM 是 Agent 决策的一部分，但只问一次模型还不是完整 Agent。后续课程会引入 Tool Calling、Memory、ReAct 及任务规划。
-
-## 自查
-- 模型 ID 与项目模型别名有什么区别？
-- vLLM 与 Python Agent 为什么可以用不同 Conda 环境？
-- 模型会不会自动记住上一次独立 API 请求？

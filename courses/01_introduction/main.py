@@ -10,11 +10,13 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from utils.llm_client import MODEL_NAMES, get_client, get_model_config
 
+# 预设的提示词
+DEFAULT_PROMPT = "What is an AI agent? Explain briefly."
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="调用模型完成对话")
-    parser.add_argument("--model", choices=MODEL_NAMES, default=None)
-    parser.add_argument("--prompt", default="What is an AI agent? Explain briefly.")
+    parser.add_argument("--model", choices=MODEL_NAMES, default="Qwen3.5-27b-AWQ-4bit")
+    parser.add_argument("--prompt", default=DEFAULT_PROMPT)
     args = parser.parse_args()
 
     config = get_model_config(args.model)
@@ -26,7 +28,9 @@ def main() -> None:
                 "content": args.prompt
             }],
         )
-    print("AI:", response.choices[0].message.content)
+
+    clean_response = response.choices[0].message.content.strip().replace("\n\n", "")
+    print("AI:", clean_response)
 
 
 if __name__ == "__main__":
