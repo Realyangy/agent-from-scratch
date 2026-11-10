@@ -1,4 +1,4 @@
-# 02 Chat Completions API｜CONCEPT
+# 02 OpenAI API
 
 ## 学习目标
 掌握 API 调用、消息角色、多轮对话、Temperature、Streaming、Token 统计以及模型比较。本项目使用 OpenAI 兼容接口，但不要求使用 OpenAI 官方模型。
@@ -23,12 +23,3 @@
 
 ## Token Usage 与输出预算
 prompt_tokens 为输入使用量，completion_tokens 为输出使用量，total_tokens 通常为两者之和。max_tokens 限制生成预算，不是模型上下文窗口长度。API 可能按 Token 收费，本地模型则消耗计算资源。usage 可能为空，尤其在某些流式响应中。
-
-## 模型对比和选择
-本课程只保留两个可选配置：Qwen 的本地 vLLM、DeepSeek 的远程 API。模型比较应关注输出质量、时延、成本、错误率和吞吐量，而不是用单个例子宣称哪种模型更优。跨模型对比默认关闭，需显式指定参数。
-
-## 错误与可靠性
-常见错误：400 参数不支持、401 鉴权失败、429 限流、5xx 服务异常、网络超时。重试应区分临时错误与永久错误，避免无限重试或重复计费。
-
-## 面向 Agent 的意义
-多轮历史、模型选路、输出限制和错误控制是后面 Tool Calling 与 Agent Loop 的基础。
