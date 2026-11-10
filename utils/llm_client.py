@@ -38,7 +38,7 @@ def get_model_config(model_name: str | None = None) -> ModelConfig:
             api_key=os.getenv("DEEPSEEK_API_KEY", "").strip(),
         )
     else:
-        raise ValueError(f"Unknown model: {name}, please select from [{', '.join(MODEL_NAMES)}]")
+        raise ValueError(f"Unknown model: {name}, please select from {[', '.join(MODEL_NAMES)]}.")
 
     if not config.model:
         raise ValueError(f"{name} is missing a model ID.")
