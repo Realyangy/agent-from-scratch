@@ -20,7 +20,7 @@ class ModelConfig:
     api_key: str
 
 
-# 读取模型配置
+# 获取模型配置
 def get_model_config(model_name: str | None = None) -> ModelConfig:
     name = model_name or os.getenv("AGENT_MODEL_NAME", MODEL_NAMES[0])
     if name == "Qwen3.5-27b-AWQ-4bit":
@@ -59,12 +59,12 @@ def _options(config: ModelConfig) -> dict:
     }
 
 
-# 同步调用模型客户端
+# 以同步方式获取模型客户端
 def get_client(model_name: str | None = None) -> OpenAI:
     return OpenAI(**_options(get_model_config(model_name)))
 
 
-# 异步调用模型客户端
+# 以异步方式获取模型客户端
 def get_async_client(model_name: str | None = None) -> AsyncOpenAI:
     return AsyncOpenAI(**_options(get_model_config(model_name)))
 
@@ -81,7 +81,7 @@ def print_token_usage(usage: object | None) -> None:
     print(f"Input: {input_tokens}\nOutput: {output_tokens}\nTotal: {total_tokens}")
 
 
-# 调用LLM模型接口
+# 调用客户端进行一次调用
 def call_llm(client, config: ModelConfig, messages: list, enable_thinking: bool = False,**kwargs):
     
     # 控制模型思考模式的开关
@@ -96,4 +96,4 @@ def call_llm(client, config: ModelConfig, messages: list, enable_thinking: bool 
         }
     else:
         raise ValueError("Model not in the supported list.")
-    return client.chat.completions.create(model=config.name, messages=messages, **kwargs)
+    return client.chat.completions.create(model=config.model, messages=messages, **kwargs)
