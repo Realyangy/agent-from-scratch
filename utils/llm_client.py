@@ -79,3 +79,21 @@ def print_token_usage(usage: object | None) -> None:
     output_tokens = getattr(usage, 'completion_tokens', '?')
     total_tokens = getattr(usage, 'total_tokens', '?')
     print(f"Input: {input_tokens}\nOutput: {output_tokens}\nTotal: {total_tokens}")
+
+
+# 调用LLM模型接口
+def call_llm(client, config: ModelConfig, messages: list, enable_thinking: bool = False,**kwargs):
+    
+    # 控制模型思考模式的开关
+    if "qwen" in config.name.lower():
+        kwargs["extra_body"] = {
+            "chat_template_kwargs": {"enable_thinking": enable_thinking}
+        }
+    elif "deepseek" in config.name.lower():
+        ds_think = "enabled" if enable_thinking else "disabled"
+        kwargs["extra_body"] = {
+            "thinking": {"type": ds_think}
+        }
+    else:
+        raise ValueError("Model not in the supported list.")
+    return client.chat.completions.create(model=config.name, messages=messages, **kwargs)
