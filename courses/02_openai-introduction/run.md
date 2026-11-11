@@ -1,6 +1,6 @@
 # 02 OpenAI API
 
-对应当前课程的 `openai_intro.py`。原项目的 `openai-intro.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
+对应当前课程的 `main.py`。原项目的 `openai-intro.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
 ## 初始化
 公共工具 get_model_config() 返回模型参数，get_client() 创建同步 OpenAI SDK 客户端。所有服务使用兼容的 Chat Completions 接口。
@@ -26,6 +26,6 @@
 
 ## 运行
 ~~~bash
-python courses/02_openai-intro/openai_intro.py
-python courses/02_openai-intro/openai_intro.py --model DeepSeekV4.1-Flash
+python courses/02_openai-introduction/main.py
+python courses/02_openai-introduction/main.py --model DeepSeekV4.1-Flash
 ~~~

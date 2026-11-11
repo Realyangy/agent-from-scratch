@@ -1,4 +1,4 @@
-# 06 流式输出｜CODE
+# 04 流式输出
 
 对应当前课程的 `coding.py`。原项目的 `coding.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
@@ -48,8 +48,8 @@ print("\n\nFinal answer:\n" + "".join(chunks))
 
 ## 运行
 ~~~bash
-python courses/06_coding/coding.py
-python courses/06_coding/coding.py --model DeepSeekV4.1-Flash --max-tokens 500
+python courses/04_coding/coding.py
+python courses/04_coding/coding.py --model DeepSeekV4.1-Flash --max-tokens 500
 ~~~
 
 ## 练习

@@ -1,4 +1,4 @@
-# 06 Streaming 与响应控制｜CONCEPT
+# 04 Streaming 与响应控制
 
 ## 目标
 理解流式输出（Streaming）、输出 Token 限制以及它们在交互式 Agent 中的价值。虽然课程目录叫 coding，重点并不是自动写代码。

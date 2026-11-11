@@ -1,4 +1,4 @@
-"""课程 06：流式输出与最大生成 Token 数量限制。"""
+"""课程 04：流式输出与最大生成 Token 数量限制。"""
 
 import argparse
 import sys

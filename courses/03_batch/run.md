@@ -1,4 +1,4 @@
-# 05 并发调用｜CODE
+# 03 并发调用
 
 对应当前课程的 `batch.py`。原项目的 `batch.js` 已从本仓库删除，历史版本仍可通过 Git 查看；下面介绍 Python 实现。
 
@@ -43,8 +43,8 @@ asyncio.run(main_async(args.model))
 
 ## 运行
 ~~~bash
-python courses/05_batch/batch.py
-python courses/05_batch/batch.py --model DeepSeekV4.1-Flash
+python courses/03_batch/batch.py
+python courses/03_batch/batch.py --model DeepSeekV4.1-Flash
 ~~~
 
 ## 练习
