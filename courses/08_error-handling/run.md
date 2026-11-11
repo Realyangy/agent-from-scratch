@@ -2,7 +2,7 @@
 
 This file demonstrates **comprehensive error handling for agent-style programs**: a typed error taxonomy, timeouts and retries with backoff, simulated tool failures, **degraded mode** when the LLM path fails, and **`AgentWorkflowError`** when orchestration breaks. It runs locally with **`node-llama-cpp`** and a GGUF model (same stack as the other agent examples).
 
-**Run:** `node examples/11_error-handling/error-handling.js`
+**Run:** `node courses/08_error-handling/error-handling.js`
 
 ---
 

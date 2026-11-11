@@ -1,5 +1,5 @@
 /**
- * Example 15: Tool routing with embeddings - IT helpdesk agent
+ * Example 09: Tool routing with embeddings - IT helpdesk agent
  *
  * An agent with 12 tools uses a small embedding model to pre-filter
  * which tools are exposed to the chat LLM for each user request.
@@ -7,7 +7,7 @@
  * the user message is the query, and cosine similarity is retrieval.
  *
  * Run:
- *   node examples/15_tool-routing-embeddings/tool-routing-embeddings.js
+ *   node courses/09_tool-routing-embeddings/tool-routing-embeddings.js
  */
 import { defineChatSessionFunction, getLlama, LlamaChatSession, QwenChatWrapper } from "node-llama-cpp";
 import { fileURLToPath } from "url";

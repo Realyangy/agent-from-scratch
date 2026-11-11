@@ -5,7 +5,7 @@ This example loads **two** GGUF models with one `getLlama()` instance: a **chat*
 ## Run
 
 ```bash
-node examples/15_tool-routing-embeddings/tool-routing-embeddings.js
+node courses/09_tool-routing-embeddings/tool-routing-embeddings.js
 ```
 
 Requires both files under `models/` (see [DOWNLOAD.md](../../DOWNLOAD.md)): `Qwen3-1.7B-Q8_0.gguf` and `bge-small-en-v1.5-q8_0.gguf`.

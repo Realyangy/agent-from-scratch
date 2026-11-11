@@ -1,5 +1,5 @@
 /**
- * Example 11: Comprehensive error handling patterns for agent interactions
+ * Example 08: Comprehensive error handling patterns for agent interactions
  *
  * This example uses a real local LLM via `node-llama-cpp` and demonstrates:
  * - Standardized error types for LLM calls, tool execution, and agent workflows
@@ -7,7 +7,7 @@
  * - User-friendly error messages with correlation ids
  *
  * Run:
- *   node examples/11_error-handling/error-handling.js
+ *   node courses/08_error-handling/error-handling.js
  */
 
 import crypto from "node:crypto";

@@ -62,7 +62,7 @@ Available functions:
 **Coding Assistant**: File operations, code execution
 **Data Analyst**: Database queries, calculations
 
-When you have many tools, sending the full catalog on every turn can waste context and increase wrong-tool calls; see [Example 15: tool routing with embeddings](../15_tool-routing-embeddings/CONCEPT.md) for a small embedding + exemplar pre-filter before the chat model runs.
+When you have many tools, sending the full catalog on every turn can waste context and increase wrong-tool calls; see [Example 09: tool routing with embeddings](../09_tool-routing-embeddings/README.md) for a small embedding + exemplar pre-filter before the chat model runs.
 
 ## Key Takeaway
 
