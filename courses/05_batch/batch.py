@@ -1,19 +1,18 @@
-"""课程 05：使用 asyncio + AsyncOpenAI 并发执行两个独立请求。
-
-这是客户端并发，不等同于强制指定 vLLM 内部的 GPU batch_size。
+"""
+使用asyncio和AsyncOpenAI并发执行两个独立请求
 """
 
+import sys
 import argparse
 import asyncio
-import sys
 from pathlib import Path
 from time import perf_counter
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from utils.llm_client import MODEL_NAMES, get_async_client, get_model_config
 
-QUESTIONS = ["Hi there, how are you?", "How much is 6+6?"]
 
+QUESTIONS = ["Hi there, how are you?", "How much is 6+6?"]
 
 async def main_async(model_name: str | None) -> None:
     config = get_model_config(model_name)
