@@ -2,7 +2,7 @@
 使用asyncio和AsyncOpenAI并发执行两个独立请求
 相关异步操作：
     async def：定义异步函数
-    await：定义异步操作，表示在执行这行代码时可能需要等待，在等待时可以挂起该任务，去执行其他的任务
+    await：等待异步操作，表示在执行这行代码时可能需要等待，在等待时可以挂起该任务，去执行其他的任务
     asyncio.gather()：并发执行多个异步任务，多个协程对象作为参数传入
     async with：管理需要异步初始化，结束时会自动调用资源的清理方法
     asyncio.run()：启动异步执行环境（事件循环），是异步程序的启动入口。参与事件循环的都是不同事件，事件A先开始，等待时开始执行事件B，B等待时继续执行事件A。
@@ -15,7 +15,7 @@ from pathlib import Path
 from time import perf_counter
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from utils.llm_client import MODEL_NAMES, get_client, get_async_client, get_model_config
+from utils.llm_client import MODEL_NAMES, get_model_config, get_client, get_async_client, call_llm
 
 QUESTIONS = ["How are you?", "How much is 6+6?"]
 
@@ -26,7 +26,7 @@ async def main_async(model_name: str | None) -> None:
 
         async def ask(question: str) -> str:
             messages = [{"role": "user", "content": question}]
-            response = await client.chat.completions.create(model=config.model, messages=messages, max_tokens=200)
+            response = await call_llm(client, config, messages)
             return response.choices[0].message.content or ""
 
         started = perf_counter()
@@ -46,14 +46,14 @@ def main_synch(model_name: str | None) -> None:
 
         def ask(question: str) -> str:
             messages = [{"role": "user", "content": question}]
-            response = client.chat.completions.create(model=config.model, messages=messages, max_tokens=200)
+            response = call_llm(client, config, messages)
             return response.choices[0].message.content or ""
 
         started = perf_counter()
         for question in QUESTIONS:
             answer = ask(question)
             print(f"User: {question}\nAI: {answer}")
-        print(f"Concurrent execution time: {perf_counter() - started:.2f}s")
+        print(f"Sequential execution time: {perf_counter() - started:.2f}s")
 
 
 def main() -> None:
