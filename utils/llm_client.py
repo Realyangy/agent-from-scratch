@@ -82,7 +82,7 @@ def print_token_usage(usage: object | None) -> None:
 
 
 # 调用客户端进行一次调用
-def call_llm(client, config: ModelConfig, messages: list, enable_thinking: bool = False,**kwargs):
+def call_llm(client, config: ModelConfig, messages: list, max_tokens: int = 200, enable_thinking: bool = False,**kwargs):
     
     # 控制模型思考模式的开关
     if "qwen" in config.name.lower():
@@ -96,4 +96,4 @@ def call_llm(client, config: ModelConfig, messages: list, enable_thinking: bool 
         }
     else:
         raise ValueError("Model not in the supported list.")
-    return client.chat.completions.create(model=config.model, messages=messages, **kwargs)
+    return client.chat.completions.create(model=config.model, messages=messages, max_tokens=max_tokens, **kwargs)
