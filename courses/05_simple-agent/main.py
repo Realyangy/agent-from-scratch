@@ -1,28 +1,25 @@
 """05: First agent—call a real Python function through LLM tool calling."""
-import argparse
 import sys
-from datetime import datetime
+import argparse
 from pathlib import Path
+from datetime import datetime
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-
-from utils.llm_client import MODEL_NAMES, get_client, get_model_config
 from utils.tool_loop import function_tool, run_tool_loop
+from utils.llm_client import MODEL_NAMES, get_client, get_model_config
 
-SYSTEM_PROMPT = (
-    "You are a professional chronologist. When the user asks for the current "
-    "time, use the getCurrentTime tool. Convert the tool's 12-hour clock into "
-    "24-hour HH:MM format without seconds. Never invent the current time."
-)
+
+SYSTEM_PROMPT = """You are a professional chronologist. When the user asks for the current time, use the getCurrentTime tool.
+Convert the tool's 12-hour clock into 24-hour HH:MM format without seconds. Never invent the current time."""
+
 TOOLS = [function_tool("getCurrentTime", "Get the current local time as a 12-hour clock string")]
-
 
 def get_current_time() -> str:
     return datetime.now().strftime("%I:%M:%S %p")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="05 - First tool-calling agent")
+    parser = argparse.ArgumentParser(description="tool-calling agent")
     parser.add_argument("--model", choices=MODEL_NAMES, default=None)
     parser.add_argument("--prompt", default="What time is it right now?")
     parser.add_argument("--enable-thinking", action="store_true")
