@@ -2,8 +2,8 @@ import sys
 import argparse
 from pathlib import Path
 
-# 根目录的获取：__file__是当前文件的路径，resolve()获取绝对路径，parents[2]获取上两级目录
-ROOT_DIR = Path(__file__).resolve().parents[2]
+# 根目录的获取：__file__是当前文件的路径，resolve()获取绝对路径，parents[1]获取上一级目录
+ROOT_DIR = Path(__file__).resolve().parents[1]
 
 # 将根目录加入查找模块时的路径列表，这里的0表示插入第一个位置
 sys.path.insert(0, str(ROOT_DIR))

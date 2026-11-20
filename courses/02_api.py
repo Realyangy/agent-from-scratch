@@ -2,7 +2,7 @@ import sys
 import argparse
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from utils.llm_client import MODEL_NAMES, ModelConfig, get_client, get_model_config, print_token_usage, call_llm
 
 
